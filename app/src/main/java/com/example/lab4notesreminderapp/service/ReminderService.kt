@@ -7,30 +7,25 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import androidx.privacysandbox.tools.core.generator.build
 import com.example.lab4notesreminderapp.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class ReminderService : Service() {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Default)
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.IO + job)
     private val CHANNEL_ID = "ReminderChannel"
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotificationChannel()
-
-        coroutineScope.launch {
-            // Delay for 10 seconds
+        scope.launch {
+            // Delay for 10 seconds before showing notification
             delay(10000)
 
-            // Build and show the notification
             val notification = NotificationCompat.Builder(this@ReminderService, CHANNEL_ID)
                 .setContentTitle("Notes Reminder")
                 .setContentText("Don't forget to check your notes!")
-                .setSmallIcon(R.drawable.ic_notification) // Create this icon
+                .setSmallIcon(R.drawable.ic_notification) // Ensure this drawable exists
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .build()
 
@@ -40,8 +35,12 @@ class ReminderService : Service() {
             // Stop the service after the task is done
             stopSelf()
         }
+        return START_NOT_STICKY
+    }
 
-        return START_STICKY
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 
     private fun createNotificationChannel() {

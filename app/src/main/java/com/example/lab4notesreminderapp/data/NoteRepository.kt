@@ -1,8 +1,3 @@
-import androidx.compose.foundation.text2.input.delete
-import androidx.compose.foundation.text2.input.insert
-import com.example.lab4notesreminderapp.data.Note
-import com.example.lab4notesreminderapp.data.NoteDao
-
 package com.example.lab4notesreminderapp.data
 
 import kotlinx.coroutines.flow.Flow
@@ -21,9 +16,5 @@ class NoteRepository(private val noteDao: NoteDao) {
 
     suspend fun delete(note: Note) {
         noteDao.delete(note)
-    }
-
-    fun getNoteById(id: Int): Flow<Note?> {
-        return noteDao.getNoteById(id)
     }
 }

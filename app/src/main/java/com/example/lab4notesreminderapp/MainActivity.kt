@@ -5,12 +5,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.text2.input.insert
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lab4notesreminderapp.data.Note
 import com.example.lab4notesreminderapp.databinding.ActivityMainBinding
@@ -21,7 +20,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val noteViewModel: NoteViewModel by viewModels()
 
-    // ActivityResultLauncher for notification permission
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -35,21 +33,33 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Set up the toolbar
+        setSupportActionBar(binding.toolbar)
+
         val adapter = NoteListAdapter()
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         noteViewModel.allNotes.observe(this) { notes ->
-            notes?.let { adapter.submitList(it) }
+            // Let the adapter know about the new list.
+            adapter.submitList(notes)
+
+            // Show the empty view if the list is empty, otherwise show the RecyclerView
+            if (notes.isNullOrEmpty()) {
+                binding.recyclerView.visibility = View.GONE
+                binding.emptyView.visibility = View.VISIBLE
+            } else {
+                binding.recyclerView.visibility = View.VISIBLE
+                binding.emptyView.visibility = View.GONE
+            }
         }
 
         binding.fabAddNote.setOnClickListener {
-            val noteTitle = "Test Note " + System.currentTimeMillis() / 1000
-            val noteContent = "This is a test note."
+            val noteTitle = "New Note " + (noteViewModel.allNotes.value?.size?.plus(1) ?: 1)
+            val noteContent = "This is a sample note."
             noteViewModel.insert(Note(title = noteTitle, content = noteContent))
         }
 
-        // Ask for permission and start service
         askForNotificationPermission()
     }
 
