@@ -1,75 +1,37 @@
-package com.example.lab4notesreminderapp
+package com.example.lab4notesreminderapp.ui
 
-
-import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import androidx.compose.foundation.text2.input.insert
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lab4notesreminderapp.data.Note
-import com.example.lab4notesreminderapp.data.NotesDatabase
-import com.example.lab4notesreminderapp.data.NoteRepository
-import com.example.lab4notesreminderapp.ui.NoteListAdapter
-import com.example.lab4notesreminderapp.ui.AddNoteFragment
-import com.example.lab4notesreminderapp.ui.NoteDetailFragment
 import com.example.lab4notesreminderapp.databinding.ActivityMainBinding
-import com.example.lab4notesreminderapp.service.ReminderService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
-
-class MainActivity : AppCompatActivity(), NoteListAdapter.OnNoteClickListener {
-
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: NoteListAdapter
-    private lateinit var viewModelFactory: com.example.lab4notesreminderapp.data.NoteViewModelFactory
-    private lateinit var viewModel: com.example.lab4notesreminderapp.data.NoteViewModel
-
+    private val noteViewModel: NoteViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-// Setup database + repository + viewmodel
-        val dao = NotesDatabase.getInstance(applicationContext).noteDao()
-        val repository = NoteRepository(dao)
-        viewModelFactory = com.example.lab4notesreminderapp.data.NoteViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, viewModelFactory)[com.example.lab4notesreminderapp.data.NoteViewModel::class.java]
-
-
-        adapter = NoteListAdapter(this)
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        val adapter = NoteListAdapter()
         binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
-
-        viewModel.allNotes.observe(this) { notes ->
-            adapter.submitList(notes)
+        noteViewModel.allNotes.observe(this) { notes ->
+            notes?.let { adapter.submitList(it) }
         }
 
-
-        binding.fabAdd.setOnClickListener {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, AddNoteFragment())
-                .addToBackStack(null)
-                .commit()
+        // Dummy data for testing
+        binding.fabAddNote.setOnClickListener {
+            val noteTitle = "Test Note " + System.currentTimeMillis() / 1000
+            val noteContent = "This is a test note."
+            noteViewModel.insert(Note(title = noteTitle, content = noteContent))
         }
-
-
-// Start reminder service (simple demonstration)
-        val intent = Intent(this, ReminderService::class.java)
-        startService(intent)
-    }
-
-
-    override fun onNoteClick(note: Note) {
-        val frag = NoteDetailFragment.newInstance(note.id)
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, frag)
-            .addToBackStack(null)
-            .commit()
     }
 }
