@@ -1,6 +1,12 @@
+/**
+ * MAD204-01 - Lab 4
+ * Author: Darshilkumar Karkar (A00203357)
+ * Date: 07/12/2025
+ * Description: A background service that runs independently of the UI. It waits for
+ * 5 seconds and then triggers a system notification to remind the user.
+ */
 package com.example.lab4notesreminderapp
 
-import android.R
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -30,18 +36,14 @@ class ReminderService : Service() {
         val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "Note Reminders",
-                NotificationManager.IMPORTANCE_HIGH
-            )
+            val channel = NotificationChannel(channelId, "Note Reminders", NotificationManager.IMPORTANCE_HIGH)
             manager.createNotificationChannel(channel)
         }
 
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("Reminder: $title")
             .setContentText("Don't forget to check your note!")
-            .setSmallIcon(R.drawable.ic_dialog_info)
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 

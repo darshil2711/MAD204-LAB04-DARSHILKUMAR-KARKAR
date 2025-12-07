@@ -1,3 +1,10 @@
+/**
+ * MAD204-01 - Lab 4
+ * Author: Darshilkumar Karkar (A00203357)
+ * Date: 07/12/2025
+ * Description: The primary activity. Displays the list of notes, handles navigation to
+ * the Add/Edit screen, and manages the Swipe-to-Delete functionality.
+ */
 package com.example.lab4notesreminderapp
 
 import android.content.Context
@@ -30,7 +37,7 @@ class MainActivity : AppCompatActivity() {
 
         db = NotesDatabase.getDatabase(this)
 
-        // 1. Setup Broadcast Receiver (Fixed for Android 14+)
+        // Setup Broadcast Receiver
         receiver = AppReceiver()
         val filter = IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED)
 
@@ -40,12 +47,12 @@ class MainActivity : AppCompatActivity() {
             registerReceiver(receiver, filter)
         }
 
-        // 2. Setup UI
+        // Setup UI
         recyclerView = findViewById(R.id.recyclerViewNotes)
         emptyView = findViewById(R.id.textViewEmpty)
         val fab = findViewById<FloatingActionButton>(R.id.fabAddNote)
 
-        // 3. Setup Adapter
+        // Setup Adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = NotesAdapter(emptyList()) { note ->
             val intent = Intent(this, AddEditNoteActivity::class.java)
@@ -56,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         }
         recyclerView.adapter = adapter
 
-        // 4. Setup Swipe to Delete
+        // Setup Swipe to Delete
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -67,18 +74,15 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                // FIXED: Use bindingAdapterPosition instead of deprecated adapterPosition
                 val position = viewHolder.bindingAdapterPosition
 
-                // Safety check to prevent crashing if the item is invalid
                 if (position != RecyclerView.NO_POSITION) {
                     val noteToDelete = adapter.getNoteAt(position)
 
                     lifecycleScope.launch {
                         db.noteDao().delete(noteToDelete)
-                        loadNotes() // Refresh list
+                        loadNotes()
 
-                        // Undo logic
                         Snackbar.make(recyclerView, "Note deleted", Snackbar.LENGTH_LONG)
                             .setAction("Undo") {
                                 lifecycleScope.launch {
@@ -93,7 +97,6 @@ class MainActivity : AppCompatActivity() {
 
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView)
 
-        // 5. FAB Click Listener
         fab.setOnClickListener {
             startActivity(Intent(this, AddEditNoteActivity::class.java))
         }

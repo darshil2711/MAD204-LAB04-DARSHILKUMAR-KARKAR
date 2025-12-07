@@ -1,3 +1,10 @@
+/**
+ * MAD204-01 - Lab 4
+ * Author: Darshilkumar Karkar (A00203357)
+ * Date: 07/12/2025
+ * Description: BroadcastReceiver that listens for system-wide events.
+ * Currently configured to listen for Airplane Mode changes.
+ */
 package com.example.lab4notesreminderapp
 
 import android.content.BroadcastReceiver

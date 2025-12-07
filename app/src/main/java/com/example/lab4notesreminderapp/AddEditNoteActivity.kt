@@ -1,3 +1,10 @@
+/**
+ * MAD204-01 - Lab 4
+ * Author: Darshilkumar Karkar (A00203357)
+ * Date: 07/12/2025
+ * Description: Activity for creating or updating a note. It saves data to the Room DB
+ * and starts the ReminderService to schedule a notification.
+ */
 package com.example.lab4notesreminderapp
 
 import android.Manifest
@@ -23,7 +30,7 @@ class AddEditNoteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_note)
 
-        // NEW: Request Notification Permission for Android 13+ (Tiramisu)
+        // Request Notification Permission for Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 101)
@@ -36,7 +43,6 @@ class AddEditNoteActivity : AppCompatActivity() {
         val editContent = findViewById<TextInputEditText>(R.id.editTextContent)
         val btnSave = findViewById<Button>(R.id.buttonReminder)
 
-        // Check if editing existing note
         if (intent.hasExtra("id")) {
             noteId = intent.getIntExtra("id", 0)
             editTitle.setText(intent.getStringExtra("title"))
@@ -61,13 +67,12 @@ class AddEditNoteActivity : AppCompatActivity() {
                     db.noteDao().update(note)
                 }
 
-                // Start Background Service for Notification
                 val serviceIntent = Intent(this@AddEditNoteActivity, ReminderService::class.java)
                 serviceIntent.putExtra("EXTRA_TITLE", title)
                 startService(serviceIntent)
 
                 Toast.makeText(this@AddEditNoteActivity, "Saved & Reminder Set!", Toast.LENGTH_SHORT).show()
-                finish() // Go back to Main Activity
+                finish()
             }
         }
     }
