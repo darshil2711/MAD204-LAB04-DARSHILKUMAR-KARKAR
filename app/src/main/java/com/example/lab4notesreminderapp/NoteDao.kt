@@ -1,3 +1,10 @@
+/**
+ * MAD204-01 - Lab 4
+ * Author: Darshilkumar Karkar (A00203357)
+ * Date: 07/12/2025
+ * Description: Data Access Object (DAO) interface. Defines the methods for interacting
+ * with the database (Insert, Update, Delete, and Query all notes).
+ */
 package com.example.lab4notesreminderapp
 
 import androidx.room.*

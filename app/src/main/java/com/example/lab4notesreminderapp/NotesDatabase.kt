@@ -1,3 +1,10 @@
+/**
+ * MAD204-01 - Lab 4
+ * Author: Darshilkumar Karkar (A00203357)
+ * Date: 07/12/2025
+ * Description: The main Room database class. It creates a singleton instance of the database
+ * to prevent multiple connections and provides access to the DAO.
+ */
 package com.example.lab4notesreminderapp
 
 import android.content.Context
@@ -5,14 +12,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-// 1. Annotate the class to be a Room Database
 @Database(entities = [Note::class], version = 1, exportSchema = false)
 abstract class NotesDatabase : RoomDatabase() {
 
-    // 2. Connect the Database to the DAO
     abstract fun noteDao(): NoteDao
 
-    // 3. Create a Singleton (Standard Pattern for Room)
     companion object {
         @Volatile
         private var INSTANCE: NotesDatabase? = null

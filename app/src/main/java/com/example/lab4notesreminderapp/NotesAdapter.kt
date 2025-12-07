@@ -1,3 +1,10 @@
+/**
+ * MAD204-01 - Lab 4
+ * Author: Darshilkumar Karkar (A00203357)
+ * Date: 07/12/2025
+ * Description: RecyclerView Adapter that binds the list of Note objects to the UI views.
+ * Includes a helper method to get a note at a specific position for deletion.
+ */
 package com.example.lab4notesreminderapp
 
 import android.view.LayoutInflater
@@ -22,8 +29,6 @@ class NotesAdapter(
         }
     }
 
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
         return NoteViewHolder(view)
@@ -35,13 +40,11 @@ class NotesAdapter(
 
     override fun getItemCount() = notes.size
 
-    // Helper to update the list
     fun updateList(newNotes: List<Note>) {
         notes = newNotes
         notifyDataSetChanged()
     }
 
-    // NEW: Helper to get a note at a specific position for deletion
     fun getNoteAt(position: Int): Note {
         return notes[position]
     }
