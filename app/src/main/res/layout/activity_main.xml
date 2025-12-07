@@ -5,82 +5,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:colorBackground"
-    tools:context=".ui.MainActivity">
-
-    <!-- 1. AppBar for a professional look -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:title="@string/app_name" />
-
-        <LinearLayout
-            android:id="@+id/empty_view"
-            android:layout_width="186dp"
-            android:layout_height="188dp"
-            android:layout_gravity="bottom|center_horizontal"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="visible"> <!-- This will be toggled by MainActivity -->
-
-            <ImageView
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:contentDescription="No notes found"
-                android:src="@drawable/ic_notes_empty"
-                app:tint="#808080" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="No notes yet"
-                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-                android:textColor="?android:textColorSecondary" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Tap the + button to add a new note"
-                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                android:textColor="?android:textColorSecondary" />
-
-        </LinearLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
+    android:background="@color/light_gray"
+    tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewNotes"
         android:layout_width="match_parent"
-        android:layout_height="466dp"
+        android:layout_height="532dp"
         android:clipToPadding="false"
-        android:paddingTop="8dp"
-        android:paddingBottom="88dp"
-        android:visibility="gone"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/note_item"
+        android:padding="8dp"
+        tools:listitem="@layout/item_note" />
 
-        tools:visibility="visible" />
+    <TextView
+        android:id="@+id/textViewEmpty"
+        android:layout_width="98dp"
+        android:layout_height="168dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="No notes yet.\nTap + to create one!"
+        android:textColor="@color/dark_gray"
+        android:textSize="18sp"
+        android:visibility="gone" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_note"
+        android:id="@+id/fabAddNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        app:srcCompat="@drawable/ic_add"
-        app:tint="@android:color/white"
-        android:contentDescription="Add a new note" />
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/purple_500"
+        app:tint="@color/white"
+        android:contentDescription="Add new note" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
